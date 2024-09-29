@@ -4,7 +4,7 @@
 #define CALIBRATION_LOOPS -1//How many loops should be calibrated. Set to -1 to always be calibrated.
 
 //Encoding
-#define ENCODING ENCODE_ALPHA
+#define ENCODING ENCODE_PIPE
 
 #define NUM_FINGERS 5
 
@@ -34,6 +34,8 @@
 
 //ANALOG_MAX OVERRIDE:
 //#define ANALOG_MAX 4095 //uncomment and set as needed
+
+#define MAP_MAX 500
 
 #ifndef ANALOG_MAX
 #error "This board doesn't have an auto ANALOG_MAX assignment, please set it manually by uncommenting the line below ANALOG_MAX OVERRIDE in AdvancedConfig.h"

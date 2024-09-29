@@ -1,21 +1,50 @@
-/*struct inputData {
-  int* flexion;
-  int joyX;
-  int joyY;
-  bool joyClick;
-  bool triggerButton;
-  bool aButton;
-  bool bButton;
-  bool grab;
-  bool pinch;
+#include <vector>
+
+#if ENCODING == ENCODE_PIPE
+#define CLEAR_DATA 0
+#define SAVE_INTER 1
+#define SAVE_TRAVEL 2
+
+struct HandData {
+  const std::array<std::array<float, 4>, 5> flexion;
+  const std::array<float, 5> splay;
+  const float joyX;
+  const float joyY;
+  const bool joyButton;
+  const bool trgButton;
+  const bool aButton;
+  const bool bButton;
+  const bool grab;
+  const bool pinch;
+  const bool menu;
+  const bool calibrate;
 };
 
-struct outputData{
-  int* hapticLimits;
-};
-*/
+const int hand_union_size = sizeof(HandData);
 
-#if ENCODING == ENCODING_LEGACY
+union HandPacket{
+  HandData structure;
+  byte byteArray[hand_union_size];
+};
+
+HandPacket* encode(float* flexion, int joyX, int joyY, bool joyClick, bool triggerButton, bool aButton, bool bButton, bool grab, bool pinch, bool calib, bool menu);
+
+struct HapticData{
+  const std::array<int, 5> hapticLimits;
+  int Z;
+};
+
+const int haptic_union_size = sizeof(HapticData);
+
+union HapticPacket{
+  HapticData structure;
+  byte byteArray[haptic_union_size];
+};
+
+void decodeData(std::vector< uint8_t >* vec int* hapticLimits);
+#endif
+
+#if ENCODING == ENCODE_LEGACY
 //legacy encoding
 char* encode(int* flexion, int joyX, int joyY, bool joyClick, bool triggerButton, bool aButton, bool bButton, bool grab, bool pinch, bool calib, bool menu){
   static char stringToEncode[75];
@@ -102,4 +131,62 @@ int getArgument(char* stringToDecode, char command){
     return atoi(start + 1);
 }
 
+#endif
+
+#if ENCODING == ENCODE_PIPE
+std::vector< uint8_t > encode(float* flexion, int joyX, int joyY, bool joyClick, bool triggerButton, bool aButton, bool bButton, bool grab, bool pinch, bool calib, bool menu){
+  static HandPacket toEncode;
+  for (int f = 0; f < 5; f++){ //fingers
+    for (int j=0; j < 4; j++){ //joints
+      toEncode.structure.flexion[f][j] = flexion[f];
+    }
+  }
+  for (int i = 0; i < 5; i++{
+     toEncode.structure.splay[i] = flexion[i+5]
+  }
+  toEncode.structure.joyX = joyX;
+  toEncode.structure.joyY = joyY;
+  toEncode.structure.joyButton = joyClick;
+  toEncode.structure.trgButton = triggerButton;
+  toEncode.structure.aButton = aButton;
+  toEncode.structure.bButton = bButton;
+  toEncode.structure.grab = grab;
+  toEncode.structure.pinch = pinch;
+  toEncode.structure.menu = menu;
+  toEncode.structure.calibrate = calib;
+
+  return toEncode.byteArray;
+}
+
+void decodeData(std::vector< uint8_t >* vec, int* hapticLimits){
+
+  HapticPacket toDecode;
+  toDecode.byteArray = &vec;
+  
+  //Check if a Z command was received
+  //Serial.println("Message recieved");
+  if (toDecode.structure.Z != NULL) {
+    //Serial.println("Found Z!");
+    bool toReturn = false;
+    if (toDecode.structure.Z == CLEAR_DATA) {
+        clearFlags();
+        toReturn = true;
+    }
+    if (toDecode.structure.Z == SAVE_INTER) {
+        saveIntermediate();
+        toReturn = true;
+    }
+    if (toDecode.structure.Z == SAVE_TRAVEL) {
+        saveTravel();
+        toReturn = true;
+    }
+
+    if (toReturn)
+      return;
+  }
+  
+  for (int i = 0; i < 5; i++){
+    hapticLimits[i] = toDecode.structure[i];
+  }
+}
 #endif

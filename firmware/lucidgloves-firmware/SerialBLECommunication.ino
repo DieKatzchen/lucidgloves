@@ -53,26 +53,26 @@ class BLESerialCommunication : public ICommunication {
       m_isOpen = true;
     }
 
-    void output(char* data){
+    void output(const std::vector< uint8_t > &vec){
       if(pServer->getConnectedCount()) {
         NimBLEService* pSvc = pServer->getServiceByUUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
         if(pSvc) {
-            NimBLECharacteristic* qChr = pSvc->getCharacteristic("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
-            if(qChr) {
-                qChr->setValue(String(data));
-                qChr->notify();
-            }
+          NimBLECharacteristic* qChr = pSvc->getCharacteristic("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
+          if(qChr) {    
+            qChr->setValue(vec);
+            qChr->notify();
+          }
         }
       }
       //else
       //vTaskDelay(1); //keep watchdog fed
       #if BT_ECHO
-      Serial.print(data);
-      Serial.flush();
+      Serial.write(data);
+      Serial.write('\n');
       #endif
     }
 
-    bool readData(char* input){
+    bool readData(const std::vector< uint8_t > *vec){
       /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
       input[size] = NULL;*/
       if(pServer->getConnectedCount()) {
@@ -81,11 +81,11 @@ class BLESerialCommunication : public ICommunication {
           NimBLECharacteristic* qChr = pSvc->getCharacteristic("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
           if(qChr) {
             //String message = qChr->getValue();
-            strcpy(input, qChr->getValue().c_str());
+            strcpy(input, qChr->getValue< uint8_t >());
           }
         }
       }
-      return input != NULL && strlen(input) > 0;
+      return input != NULL && sizeof(input) > 0;
     }
 };
 #endif

@@ -17,14 +17,14 @@ class SerialCommunication : public ICommunication {
       m_isOpen = true;
     }
 
-    void output(char* data){
-      Serial.print(data);
+    void output(const std::vector< uint8_t > &vec){
+      Serial.print(vec);
       Serial.flush();
     }
 
-    bool readData(char* input){
-      byte size = Serial.readBytesUntil('\n', input, 100);
-      input[size] = NULL;
-      return input != NULL && strlen(input) > 0;
+    bool readData(const std::vector< uint8_t > *vec){
+      byte size = Serial.readBytesUntil('\n', vec, 100);
+      vec[size] = '\0';
+      return input != NULL && sizeof(vec) > 0;
     }
 };

@@ -24,20 +24,17 @@ class BTSerialCommunication : public ICommunication {
       m_isOpen = true;
     }
 
-    void output(char* data){
-      m_SerialBT.print(data);
+    void output(const std::vector< uint8_t > &vec){
+      m_SerialBT.write(vec);
       #if BT_ECHO
-      Serial.print(data);
-      Serial.flush();
+      Serial.write(vec);
       #endif
     }
 
-    bool readData(char* input){
-      /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
-      input[size] = NULL;*/
-      String message = m_SerialBT.readStringUntil('\n');
-      strcpy(input, message.c_str());
-      return input != NULL && strlen(input) > 0;
+    bool readData(const std::vector< uint8_t > *vec){
+      byte size = m_SerialBT.readBytesUntil('\n', vec, 100);
+      input[size] = '/0';
+      return vec != NULL && sizeof(vec) > 0;
     }
 };
 #endif

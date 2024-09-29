@@ -1,4 +1,5 @@
 #include <mutex>
+#include <vector>
 #define ALWAYS_CALIBRATING CALIBRATION_LOOPS == -1
 
 #define CALIB_OVERRIDE false
@@ -8,7 +9,7 @@
 
 bool calibrate = false;
 bool calibButton = false;
-int* fingerPos = (int[]){0,0,0,0,0,0,0,0,0,0};
+float* fingerPos = (float[]){0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 ICommunication* comm;
 
@@ -152,7 +153,7 @@ void loop() {
     bool pinchButton = getButton(PIN_PNCH_BTN) != INVERT_PINCH;
     #endif
 
-    int fingerPosCopy[10];
+    float fingerPosCopy[10];
     int mutexTimeDone;
     bool menuButton = getButton(PIN_MENU_BTN) != INVERT_MENU;
     {
@@ -174,7 +175,7 @@ void loop() {
 
     comm->output(encode(fingerPosCopy, getJoyX(), getJoyY(), joyButton, triggerButton, aButton, bButton, grabButton, pinchButton, calibButton, menuButton));
     #if USING_FORCE_FEEDBACK
-      char received[100];
+      std::vector< uint8_t > received;
       if (comm->readData(received)){
         int hapticLimits[5];
         //This check is a temporary hack to fix an issue with haptics on v0.5 of the driver, will make it more snobby code later

@@ -134,7 +134,8 @@ int readMux(byte pin){
 }
 #endif
 
-int targetSinMin, targetSinMax, targetSinCurrent, targetCosMin, targetCosMax, targetCosCurrent, targetFlexionMin, targetFlexionMax, targetFlexionCurrent, targetMaxTravel, targetProcessed;
+int targetSinMin, targetSinMax, targetSinCurrent, targetCosMin, targetCosMax, targetCosCurrent, targetFlexionMin, targetFlexionMax, targetFlexionCurrent, targetMaxTravel;
+float targetProcessed;
 void getFingerPositions(bool calibrating, bool reset){
   #if FLEXION_MIXING == MIXING_NONE //no mixing, just linear
   int rawFingersFlexion[NUM_FINGERS] = {NO_THUMB?0:analogPinRead(PIN_THUMB), analogPinRead(PIN_INDEX), analogPinRead(PIN_MIDDLE), analogPinRead(PIN_RING), analogPinRead(PIN_PINKY)};
@@ -164,7 +165,7 @@ void getFingerPositions(bool calibrating, bool reset){
 
   for (int i = 0; i < NUM_FINGERS; i++){
     rawFingers[i] = rawFingersFlexion[i];
-    rawFingers[i+NUM_FINGERS] = rawFingersSplay[i];
+    rawFingers[i+NUM_FINGERS] = rawFingersSplay[i] << 2;
   }
   
   
@@ -230,18 +231,18 @@ void getFingerPositions(bool calibrating, bool reset){
     targetMaxTravel = maxTravel[i];
   }
     if (minFingers[i] != maxFingers[i]){
-      fingerPos[i] = map( rawFingers[i], minFingers[i], maxFingers[i], 0, ANALOG_MAX );
+      fingerPos[i] = normalize( rawFingers[i], minFingers[i], maxFingers[i]);
       if (i == target)
         targetProcessed = fingerPos[i];
       #if CLAMP_ANALOG_MAP
-        if (fingerPos[i] < 0)
-          fingerPos[i] = 0;
+        if (fingerPos[i] < 0.0)
+          fingerPos[i] = 0.0;
         if (fingerPos[i] > ANALOG_MAX)
           fingerPos[i] = ANALOG_MAX;
       #endif
     }
     else {
-      fingerPos[i] = ANALOG_MAX / 2;
+      fingerPos[i] = 0.5;
     }
     
   }
@@ -273,6 +274,11 @@ void getFingerPositions(bool calibrating, bool reset){
   Serial.println();
   Serial.flush();
   */
+}
+
+float normalize(int in, int in_min, int in_max)
+{
+  return ((float)in - in_min) / (in_max - in_min);
 }
 
 int analogReadDeadzone(int pin){
@@ -485,5 +491,3 @@ void loadIntermediate()
     address += sizeof(int);
   }*/
 }
-
-

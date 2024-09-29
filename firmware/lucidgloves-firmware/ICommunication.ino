@@ -7,7 +7,7 @@ class ICommunication {
 
     virtual void start() = 0;
 
-    virtual void output(char* data) = 0;
+    virtual void output(const std::vector< uint8_t > &vec) = 0;
 
-    virtual bool readData(char* input) = 0;
+    virtual bool readData(const std::vector< uint8_t > *vec) = 0;
 };
