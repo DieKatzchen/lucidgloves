@@ -5,7 +5,7 @@ InputManager::InputManager() {
 
 void InputManager::setupInputs() {
     
-  EEPROM.begin(0x78 + 1);
+  prefs.begin("LucidGloves");
   if (isSavedLimits()){
     savedTravel = true;
     loadTravel();
@@ -265,7 +265,8 @@ int InputManager::sinCosMix(int sinPin, int cosPin, int i){
 
 void InputManager::saveTravel()
 {
-  byte flags = EEPROM.read(0x00);
+  prefs.putBytes(maxTravel, (byte*)(&maxTravel), sizeof(maxTravel));
+  /*byte flags = EEPROM.read(0x00);
   flags |= 0x01;  // Set bit 0
   EEPROM.write(0x00, flags); // Save clamping saved limits flag
 
@@ -279,12 +280,17 @@ void InputManager::saveTravel()
   
   EEPROM.commit(); // Ensure changes are written to EEPROM
 
-  loadTravel();
+  loadTravel();*/
 }
 
 void InputManager::saveIntermediate()
 {
-  byte flags = EEPROM.read(0x00);
+  prefs.putBytes("sinMax", (byte*)(&sinMax), sizeof(sinMax));
+  prefs.putBytes("sinMin", (byte*)(&sinMin), sizeof(sinMin));
+  prefs.putBytes("cosMax", (byte*)(&cosMax), sizeof(cosMax));
+  prefs.putBytes("cosMin", (byte*)(&cosMin), sizeof(cosMin));
+  
+  /*byte flags = EEPROM.read(0x00);
   flags |= 0x02;  // Set bit 1
   EEPROM.write(0x00, flags); // Save intermediate values saved flag
 
@@ -302,30 +308,37 @@ void InputManager::saveIntermediate()
     address += sizeof(int);
   }
   
-  EEPROM.commit(); // Ensure changes are written to EEPROM
+  EEPROM.commit(); // Ensure changes are written to EEPROM */
 }
 
 void InputManager::clearFlags()
 {
-  EEPROM.write(0x00, 0x00); // Clear the flags
-  EEPROM.commit(); // Ensure the changes are written to EEPROM
+  prefs.clear();
+  /*EEPROM.write(0x00, 0x00); // Clear the flags
+  EEPROM.commit(); // Ensure the changes are written to EEPROM*/
 }
 
 bool InputManager::isSavedLimits()
 {
-  byte flags = EEPROM.read(0x00);
-  return flags & 0x01;  // Check bit 0
+  return (prefs.getBytesLength("maxTravel") != 0);
+  /*byte flags = EEPROM.read(0x00);
+  return flags & 0x01;  // Check bit 0*/
 }
 
 bool InputManager::isSavedIntermediate()
 {
-  byte flags = EEPROM.read(0x00);
-  return flags & 0x02;  // Check bit 1
+  return (prefs.getBytesLength("sinMax") > 0 && prefs.getBytesLength("sinMin") > 0 && prefs.getBytesLength("cosMax") > 0 && prefs.getBytesLength("cosMin") > 0);
+  /*byte flags = EEPROM.read(0x00);
+  return flags & 0x02;  // Check bit 1*/
 }
 
 void InputManager::loadTravel()
 {
-  byte flags = EEPROM.read(0x00);
+  if(prefs.getBytesLength("maxTravel") == 0);
+    return; // If clamping saved limits is not stored, do nothing
+  prefs.getBytes("maxTravel", &maxTravel, sizeof(maxTravel));
+	
+  /*byte flags = EEPROM.read(0x00);
   if (!(flags & 0x01)) return; // If clamping saved limits flag is not set, do nothing
 
   int addr = 0x01;  // Start address for flexion and splay values
@@ -333,12 +346,19 @@ void InputManager::loadTravel()
   for (int i = 0; i < 2*NUM_FINGERS; i++) {
     EEPROM.get(addr, maxTravel[i]); // Load the max travel value from the EEPROM at the current address
     addr += sizeof(int); // Increment the address by 4 because we're storing int values
-  }
+  }*/
 }
 
 void InputManager::loadIntermediate()
 {
-  byte flags = EEPROM.read(0x00);
+  if(prefs.getBytesLength("maxTravel") == 0 | prefs.getBytesLength("sinMin") == 0 | prefs.getBytesLength("cosMax") == 0 | prefs.getBytesLength("cosMin") == 0);
+    return; // If clamping saved limits is not stored, do nothing  
+  prefs.getBytes("sinMax", &sinMax, sizeof(sinMax));
+  prefs.getBytes("sinMin", &sinMin, sizeof(sinMin));
+  prefs.getBytes("cosMax", &cosMax, sizeof(cosMax));
+  prefs.getBytes("cosMin", &cosMin, sizeof(cosMin));
+  
+  /*byte flags = EEPROM.read(0x00);
   if (!(flags & 0x02)) return; // If intermediate values saved flag is not set, do nothing
 
   int address = 0x29; // Start address for sin and cos values
@@ -356,7 +376,7 @@ void InputManager::loadIntermediate()
 
     EEPROM.get(address, cosMin[i]);
     address += sizeof(int);
-  }
+  }*/
 }
 
 

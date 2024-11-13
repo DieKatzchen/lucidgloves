@@ -1,6 +1,7 @@
 #pragma once
 
-#include <EEPROM.h>
+//#include <EEPROM.h>
+#include <Preferences.h>
 #include "../../Config.h"
 #include "../../AdvancedConfig.h"
 
@@ -35,6 +36,7 @@ public:
     void loadIntermediate();
 private:
     // Add your private variables here
+	Preferences prefs;
     bool savedInter = false;
     bool savedTravel = false;
 

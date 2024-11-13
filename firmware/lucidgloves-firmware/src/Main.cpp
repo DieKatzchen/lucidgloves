@@ -24,6 +24,10 @@ void Main::setup() {
     comm = new SerialCommunication();
   #elif COMMUNICATION == COMM_BTSERIAL
     comm = new BTSerialCommunication();
+  #elif COMMUNICATION == COMM_BLESERIAL
+    comm = new BLESerialCommunication();
+  #elif COMMUNICATION = COMM_BLEBINARY
+    comm = new BLEBinaryCommunication();
   #else
     #error "Communication not set."
   #endif 
@@ -32,6 +36,8 @@ void Main::setup() {
     encoding = new AlphaEncoding();
   #elif ENCODING == ENCODE_LEGACY
     encoding = new LegacyEncoding();
+  #elif COMMUNICATION = COMM_BLEBINARY
+    encoding == NULL;
   #else
     #error "Encoding not set."
   #endif
@@ -126,10 +132,29 @@ void Main::loop() {
     data.joyX = input.getJoyX();
     data.joyY = input.getJoyY();
 
+    #if COMMUNICATION = COMM_BLEBINARY
+	  comm->output(data);
+	#else
     static char encodedString[100] = {0};
     encoding->encode(data, encodedString);
     comm->output(encodedString);
+	#endif
     #if USING_FORCE_FEEDBACK
+	  #if COMMUNICATION = COMM_BLEBINARY
+	  static DecodedData receivedData
+	  if (comm->readData(receivedData)){
+		  haptics.writeServoHaptics(recievedData.servoValues); 
+           if (recievedData.fields.specialCommandReceived){
+            Serial.println("Special command recieved!!!");
+              if (recievedData.command == "ClearData")
+                input.clearFlags();
+              else if (recievedData.command == "SaveInter")
+                input.saveIntermediate();
+              else if (recievedData.command == "SaveTravel")
+                input.saveTravel();
+           }
+	  }
+	  #else
       static char received[100];
       if (comm->readData(received)){
         int hapticLimits[5];
@@ -148,6 +173,7 @@ void Main::loop() {
            }
         }
       }
+	  #endif
     #endif
     #if defined(ESP32)
       vTaskDelay(LOOP_TIME);
