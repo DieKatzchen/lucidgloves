@@ -31,7 +31,7 @@ private:
   OutboundData data = {};
 
   bool calibrate = false;
-  int fingerPos[10] = {0,0,0,0,0,0,0,0,0,0};
+  float fingerPos[10] = {0,0,0,0,0,0,0,0,0,0};
   int loops = 0;
 
   #if ESP32_DUAL_CORE_SET

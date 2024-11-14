@@ -2,7 +2,7 @@
 #include <Arduino.h>
 void LegacyEncoding::encode(OutboundData data, char* stringToEncode){
   sprintf(stringToEncode, "%d&%d&%d&%d&%d&%d&%d&%d&%d&%d&%d&%d&%d\n", 
-  data.fingers[0], data.fingers[1], data.fingers[2], data.fingers[3], data.fingers[4],
+  (int)data.fingers[0], (int)data.fingers[1], (int)data.fingers[2], (int)data.fingers[3], (int)data.fingers[4],
   data.joyX, data.joyY, data.joyClick,
   data.triggerButton, data.aButton, data.bButton, data.grab, data.pinch
   );

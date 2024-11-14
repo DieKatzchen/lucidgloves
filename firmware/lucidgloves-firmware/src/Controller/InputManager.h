@@ -19,13 +19,13 @@ public:
     #if USING_MULTIPLEXER
     int readMux(byte pin);
     #endif
-    void getFingerPositions(bool calibrating, bool reset, int* fingerPos);
+    void getFingerPositions(bool calibrating, bool reset, float* fingerPos);
     int analogReadDeadzone(int pin);
     int getJoyX();
     int getJoyY();
     bool getButton(byte pin);
     #if FLEXION_MIXING == MIXING_SINCOS
-    int sinCosMix(int sinPin, int cosPin, int i);
+	float sinCosMix(int sinPin, int cosPin, int i);
     #endif
     void saveTravel();
     void saveIntermediate();

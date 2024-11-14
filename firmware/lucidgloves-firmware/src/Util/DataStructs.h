@@ -22,8 +22,26 @@ struct DecodedData {
     const char* command;
 };
 
+// "\\.\pipe\vrapplication\input\glove\v2\<left/right>"
+struct InputData {
+  const std::array<std::array<float, 4>, 5> flexion;
+  const std::array<float, 5> splay;
+  const float joyX;
+  const float joyY;
+  const bool joyButton;
+  const bool trgButton;
+  const bool aButton;
+  const bool bButton;
+  const bool grab;
+  const bool pinch;
+  const bool menu;
+  const bool calibrate;
+
+  const float trgValue;
+};
+
 struct OutboundData {
-    int fingers[NUM_FINGERS];
+	float fingers[NUM_FINGERS];
     int joyX;
     int joyY;
     bool joyClick;
@@ -36,6 +54,6 @@ struct OutboundData {
     bool menu;
 
     #if USING_SPLAY
-    int splay[NUM_FINGERS];
+	  float splay[NUM_FINGERS];
     #endif
 };

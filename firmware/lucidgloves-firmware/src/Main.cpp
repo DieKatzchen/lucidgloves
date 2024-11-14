@@ -108,7 +108,7 @@ void Main::loop() {
     data.pinch = input.getButton(PIN_PNCH_BTN) != INVERT_PINCH;
     #endif
 
-    int fingerPosCopy[10];
+    float fingerPosCopy[10];
     int mutexTimeDone;
     data.menu = input.getButton(PIN_MENU_BTN) != INVERT_MENU;
     {
@@ -128,12 +128,14 @@ void Main::loop() {
       
     }
 
-    memcpy(data.fingers, fingerPosCopy, 5 * sizeof(int));
+    memcpy(data.fingers, fingerPosCopy, 5 * sizeof(float));
     data.joyX = input.getJoyX();
     data.joyY = input.getJoyY();
 
     #if COMMUNICATION = COMM_BLEBINARY
-	  comm->output(data);
+	static InputData encodedStruct;
+	encoding->encode(data, encodedStruct);
+	comm->output(encodedStruct);
 	#else
     static char encodedString[100] = {0};
     encoding->encode(data, encodedString);

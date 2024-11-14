@@ -5,11 +5,11 @@ void AlphaEncoding::encode(OutboundData data, char* stringToEncode){
   char splayString[30] = "";
   #if USING_SPLAY
   sprintf(splayString, "(AB)%d(BB)%d(CB)%d(DB)%d(EB)%d", 
-  data.splay[0], data.splay[1], data.splay[2], data.splay[3], data.splay[4]
+  (int)data.splay[0], (int)data.splay[1], (int)data.splay[2], (int)data.splay[3], (int)data.splay[4]
   );
   #endif
   snprintf(stringToEncode, 100, "A%dB%dC%dD%dE%dF%dG%dP%d%s%s%s%s%s%s%s%s%s\n", 
-  data.fingers[0], data.fingers[1], data.fingers[2], data.fingers[3], data.fingers[4],
+  (int)data.fingers[0], (int)data.fingers[1], (int)data.fingers[2], (int)data.fingers[3], (int)data.fingers[4],
   data.joyX, data.joyY, trigger, data.joyClick?"H":"",
   data.triggerButton?"I":"", data.aButton?"J":"", data.bButton?"K":"", data.grab?"L":"", data.pinch?"M":"", data.menu?"N":"", data.calib?"O":"",
   splayString);

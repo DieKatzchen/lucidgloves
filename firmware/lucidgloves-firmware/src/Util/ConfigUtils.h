@@ -43,6 +43,7 @@ public:
 //Encode
 #define ENCODE_LEGACY 0
 #define ENCODE_ALPHA  1
+#define ENCODE_STRUCT 2
 
 //Multiplexer
 #define MUX(p) (p + 100)

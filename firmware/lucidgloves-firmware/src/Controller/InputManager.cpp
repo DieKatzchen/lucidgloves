@@ -77,12 +77,12 @@ int InputManager::readMux(byte pin) {
 }
 #endif
 
-void InputManager::getFingerPositions(bool calibrating, bool reset, int* fingerPos) {
+void InputManager::getFingerPositions(bool calibrating, bool reset, float* fingerPos) {
   #if FLEXION_MIXING == MIXING_NONE //no mixing, just linear
   int rawFingersFlexion[NUM_FINGERS] = {NO_THUMB?0:analogPinRead(PIN_THUMB), analogPinRead(PIN_INDEX), analogPinRead(PIN_MIDDLE), analogPinRead(PIN_RING), analogPinRead(PIN_PINKY)};
   
   #elif FLEXION_MIXING == MIXING_SINCOS
-  int rawFingersFlexion[NUM_FINGERS] = {NO_THUMB?0:sinCosMix(PIN_THUMB, PIN_THUMB_SECOND, 0 ), 
+  float rawFingersFlexion[NUM_FINGERS] = {NO_THUMB?0:sinCosMix(PIN_THUMB, PIN_THUMB_SECOND, 0 ), 
                                   sinCosMix(PIN_INDEX, PIN_INDEX_SECOND, 1 ), 
                                   sinCosMix(PIN_MIDDLE,PIN_MIDDLE_SECOND,2 ), 
                                   sinCosMix(PIN_RING,  PIN_RING_SECOND,  3 ), 
@@ -90,16 +90,16 @@ void InputManager::getFingerPositions(bool calibrating, bool reset, int* fingerP
 
   #endif
 
-  int rawFingers[2 * NUM_FINGERS];
+  float rawFingers[2 * NUM_FINGERS];
 
   #if USING_SPLAY
-    int rawFingersSplay[NUM_FINGERS] = {NO_THUMB?0:analogPinRead(PIN_THUMB_SPLAY), 
+    float rawFingersSplay[NUM_FINGERS] = {NO_THUMB?0:analogPinRead(PIN_THUMB_SPLAY), 
                               analogPinRead(PIN_INDEX_SPLAY), 
                               analogPinRead(PIN_MIDDLE_SPLAY), 
                               analogPinRead(PIN_RING_SPLAY), 
                               analogPinRead(PIN_PINKY_SPLAY)};
   #else
-    int rawFingersSplay[NUM_FINGERS] = {0,0,0,0,0};
+    float rawFingersSplay[NUM_FINGERS] = {0,0,0,0,0};
   #endif
     //memcpy(rawFingers, rawFingersFlexion, 5); //memcpy doesn't seem to work here
     //memcpy(&rawFingers[5], rawFingersSplay, 5); 
@@ -166,7 +166,7 @@ void InputManager::getFingerPositions(bool calibrating, bool reset, int* fingerP
   
   for (int i = 0; i<NUM_FINGERS; i++){
     if (minFingers[i] != maxFingers[i]){
-      fingerPos[i] = map( rawFingers[i], minFingers[i], maxFingers[i], 0, ANALOG_MAX );
+      fingerPos[i] = mapf( rawFingers[i], minFingers[i], maxFingers[i], 0, ANALOG_MAX );
       #if CLAMP_ANALOG_MAP
         if (fingerPos[i] < 0)
           fingerPos[i] = 0;
@@ -215,8 +215,7 @@ bool InputManager::getButton(byte pin){
 
 #if FLEXION_MIXING == MIXING_SINCOS
 //mixing
-int InputManager::sinCosMix(int sinPin, int cosPin, int i){
-
+float InputManager::sinCosMix(int sinPin, int cosPin, int i){
   int sinRaw = analogPinRead(sinPin);
   int cosRaw = analogPinRead(cosPin);
 
@@ -242,20 +241,21 @@ int InputManager::sinCosMix(int sinPin, int cosPin, int i){
     cosMin[i] = min(cosCalib, cosMin[i]);
     cosMax[i] = max(cosCalib, cosMax[i]);
   }
-
-  int sinScaled = map(sinRaw, sinMin[i], sinMax[i], -ANALOG_MAX, ANALOG_MAX);
-  int cosScaled = map(cosRaw, cosMin[i], cosMax[i], -ANALOG_MAX, ANALOG_MAX);
+  
+  if 
+  float sinScaled = mapf(sinRaw, sinMin[i], sinMax[i], -ANALOG_MAX, ANALOG_MAX);
+  float cosScaled = mapf(cosRaw, cosMin[i], cosMax[i], -ANALOG_MAX, ANALOG_MAX);
 
 
   //trigonometry stuffs
-  double angleRaw = atan2(sinScaled, cosScaled);
+  float angleRaw = atan2(sinScaled, cosScaled);
 
   //counting rotations
   if (((angleRaw > 0) != atanPositive[i]) && sinScaled > cosScaled){
     totalOffset1[i] += atanPositive[i]?1:-1;
   }
   atanPositive[i] = angleRaw > 0;
-  double totalAngle = angleRaw + 2*PI * totalOffset1[i];
+  float totalAngle = angleRaw + 2*PI * totalOffset1[i];
   
 
   return (int)(totalAngle * ANALOG_MAX);
