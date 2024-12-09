@@ -1,6 +1,6 @@
 #include "AlphaEncoding.h"
 #include <Arduino.h>
-void AlphaEncoding::encode(OutboundData data, char* stringToEncode){
+void AlphaEncoding::encode(InputData data, char* stringToEncode){
   int trigger = (data.fingers[1] > ANALOG_MAX/2) ? (data.fingers[1] - ANALOG_MAX/2) * 2:0;
   char splayString[30] = "";
   #if USING_SPLAY

@@ -3,11 +3,10 @@
 
 
 
-
 // Interface for encoding
 class IEncoding {
 public:
-    virtual void encode(OutboundData data, char* stringToEncode) = 0;
+    virtual void encode(InputData data, char* stringToEncode) = 0;
 	
 	virtual void encode(OutboundData data, InputData dataToEncode) = 0;
 

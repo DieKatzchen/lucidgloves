@@ -24,20 +24,20 @@ struct DecodedData {
 
 // "\\.\pipe\vrapplication\input\glove\v2\<left/right>"
 struct InputData {
-  const std::array<std::array<float, 4>, 5> flexion;
-  const std::array<float, 5> splay;
-  const float joyX;
-  const float joyY;
-  const bool joyButton;
-  const bool trgButton;
-  const bool aButton;
-  const bool bButton;
-  const bool grab;
-  const bool pinch;
-  const bool menu;
-  const bool calibrate;
+  std::array<std::array<float, 4>, 5> flexion;
+  std::array<float, 5> splay;
+  float joyX;
+  float joyY;
+  bool joyButton;
+  bool trgButton;
+  bool aButton;
+  bool bButton;
+  bool grab;
+  bool pinch;
+  bool menu;
+  bool calibrate;
 
-  const float trgValue;
+  float trgValue;
 };
 
 struct OutboundData {

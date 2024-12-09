@@ -1,9 +1,13 @@
 #include "Main.h"
 #include "Communication/SerialCommunication.h"
 #include "Communication/BTSerialCommunication.h"
+#include "Communication/BLEBinaryCommunication.h"
+#include "Communication/BLEBinaryCommunication.h"
 #include "Encoding/AlphaEncoding.h"
 #include "Encoding/LegacyEncoding.h"
+#include "Encoding/StructEncoding.h"
 #include "Util/DataStructs.h"
+#include "Util/Mapping.h"
 
 #define ALWAYS_CALIBRATING CALIBRATION_LOOPS == -1
 #define CALIB_OVERRIDE false
@@ -132,7 +136,7 @@ void Main::loop() {
     data.joyX = input.getJoyX();
     data.joyY = input.getJoyY();
 
-    #if COMMUNICATION = COMM_BLEBINARY
+    #if COMMUNICATION == COMM_BLEBINARY
 	static InputData encodedStruct;
 	encoding->encode(data, encodedStruct);
 	comm->output(encodedStruct);
@@ -142,7 +146,7 @@ void Main::loop() {
     comm->output(encodedString);
 	#endif
     #if USING_FORCE_FEEDBACK
-	  #if COMMUNICATION = COMM_BLEBINARY
+	  #if COMMUNICATION == COMM_BLEBINARY
 	  static DecodedData receivedData
 	  if (comm->readData(receivedData)){
 		  haptics.writeServoHaptics(recievedData.servoValues); 

@@ -1,4 +1,5 @@
 #pragma once
+#include "../Util/DataStructs.h"
 
 //Interface for communication
 class ICommunication {
