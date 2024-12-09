@@ -109,15 +109,41 @@ void setupInputs(){
 }
 
 int analogPinRead(int pin){
-  #if USING_MULTIPLEXER
-  if (ISMUX(pin)){
-    return readMux(UNMUX(pin));
-  }
-  else{
-    return analogRead(pin);
-  }
+  #ifdef MULTISAMPLING
+    int samples = 0;
+    #if USING_MULTIPLEXER
+    if (ISMUX(pin)){
+      for (int i = 0; i < NUM_SAMPLES; i++){
+        samples += readMux(UNMUX(pin));
+        delay(SAMPLING_DELAY);
+      }
+      return samples/NUM_SAMPLES;
+    }
+    else{
+      for (int i = 0; i < NUM_SAMPLES; i++){
+        samples += analogRead(pin);
+        delay(SAMPLING_DELAY);
+      }
+      return samples/NUM_SAMPLES;
+    }
+    #else
+      for (int i = 0; i < NUM_SAMPLES; i++){
+        samples += analogRead(pin);
+        delay(SAMPLING_DELAY);
+      }
+      return samples/NUM_SAMPLES;
+    #endif
   #else
-   return analogRead(pin);
+    #if USING_MULTIPLEXER
+    if (ISMUX(pin)){    
+      return readMux(UNMUX(pin));
+    }
+    else{
+      return analogRead(pin);
+    }
+    #else
+      return analogRead(pin);
+    #endif
   #endif
 }
 
@@ -485,5 +511,3 @@ void loadIntermediate()
     address += sizeof(int);
   }*/
 }
-
-
