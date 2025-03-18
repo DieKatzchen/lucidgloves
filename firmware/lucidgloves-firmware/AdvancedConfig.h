@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ADVANCEDCONFIG_H
+#define ADVANCEDCONFIG_H
 #include "src/Util/ConfigUtils.h"
 //THIS FILE HAS SOME EXTRA SETTINGS, MAIN SETTINGS ARE IN Config.h
 
@@ -62,4 +63,6 @@
 //ESP dual core hardware check
 #if defined(ESP32) && ESP32_DUAL_CORE
   #define ESP32_DUAL_CORE_SET true
+#endif
+
 #endif

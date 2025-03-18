@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HAPTICS_H
+#define HAPTICS_H
 #include "../../Config.h"
 
 #if defined(ESP32)
@@ -21,3 +22,5 @@ public:
     void dynScaleLimits(int* hapticLimits, float* scaledLimits);
     void writeServoHaptics(int* hapticLimits);
 };
+
+#endif

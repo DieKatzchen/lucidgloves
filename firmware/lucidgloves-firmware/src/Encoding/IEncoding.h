@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IENCODING_H
+#define IENCODING_H
 #include "../Util/DataStructs.h"
 
 
@@ -14,3 +15,5 @@ public:
 	
 	virtual DecodedData decodeData(DecodedData* dataToDecode) = 0;
 };
+
+#endif

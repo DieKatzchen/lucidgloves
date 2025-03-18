@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
 
 //#include <EEPROM.h>
 #include <Preferences.h>
@@ -93,3 +94,5 @@ private:
 
 
 };
+
+#endif

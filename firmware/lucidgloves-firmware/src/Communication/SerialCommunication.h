@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SERIALCOMMUNICATION_H
+#define SERIALCOMMUNICATION_H
 #include "ICommunication.h"
 #include "../../Config.h"
 #include <Arduino.h>
@@ -18,3 +19,5 @@ public:
 
     bool readData(char* input) override;
 };
+
+#endif

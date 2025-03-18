@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BTSERIALCOMMUNICATION_H
+#define BTSERIALCOMMUNICATION_H
 #include "ICommunication.h"
 #include "../../Config.h"
 
@@ -21,4 +22,6 @@ public:
 
     bool readData(char* input) override;
 };
+#endif
+
 #endif

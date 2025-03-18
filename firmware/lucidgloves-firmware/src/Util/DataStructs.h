@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATASTRUCTS_H
+#define DATASTRUCTS_H
 #include "../../AdvancedConfig.h"
 
 const char* const SPECIAL_COMMANDS[] = {
@@ -24,8 +25,8 @@ struct DecodedData {
 
 // "\\.\pipe\vrapplication\input\glove\v2\<left/right>"
 struct InputData {
-  std::array<std::array<float, 4>, 5> flexion;
-  std::array<float, 5> splay;
+  float flexion[5][4];
+  float splay[5];
   float joyX;
   float joyY;
   bool joyButton;
@@ -57,3 +58,5 @@ struct OutboundData {
 	  float splay[NUM_FINGERS];
     #endif
 };
+
+#endif

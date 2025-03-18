@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <mutex>
 #include "Controller/Gesture.h"
@@ -42,3 +43,5 @@ private:
   #endif
 
 };
+
+#endif

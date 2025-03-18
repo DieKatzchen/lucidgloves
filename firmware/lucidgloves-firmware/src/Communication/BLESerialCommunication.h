@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BLESERIALCOMMUNICATION_H
+#define BLESERIALCOMMUNICATION_H
 #include "ICommunication.h"
 #include "../../Config.h"
 
@@ -22,4 +23,6 @@ public:
 
     bool readData(char* input) override;
 };
+#endif
+
 #endif

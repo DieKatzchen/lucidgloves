@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ICOMMUNICATION_H
+#define ICOMMUNICATION_H
 #include "../Util/DataStructs.h"
 
 //Interface for communication
@@ -17,3 +18,5 @@ class ICommunication {
 	
 	virtual bool readData(DecodedData* input) = 0;
 };
+
+#endif

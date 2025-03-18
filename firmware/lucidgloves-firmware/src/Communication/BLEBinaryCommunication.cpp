@@ -1,4 +1,4 @@
-#include "BTSerialCommunication.h"
+#include "BLEBinaryCommunication.h"
 
 #if COMMUNICATION == COMM_BLEBINARY
 
@@ -6,7 +6,10 @@ BLEBinaryCommunication::BLEBinaryCommunication() {
     m_isOpen = false;
 }
 
-class ServerCallbacks: public NimBLEServerCallbacks {
+bool BLEBinaryCommunication::isOpen() {
+    return m_isOpen;
+}
+class ServerCallbacks: public NimBLEServerCallbacks Callbacks {
     void onConnect(NimBLEServer* pServer) {
         #ifdef NEOPIXEL
         neopixelWrite(DEBUG_LED,0,RGB_BRIGHTNESS,0); // Green
@@ -18,10 +21,6 @@ class ServerCallbacks: public NimBLEServerCallbacks {
         #endif
     };
 };
-
-bool BLEBinaryCommunication::isOpen() {
-    return m_isOpen;
-}
 
 void BLEBinaryCommunication::start() {
     NimBLEDevice::init(BTSERIAL_DEVICE_NAME);

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CONFIG_H
+#define CONFIG_H
 #include "src/Util/ConfigUtils.h"
 #include "AdvancedConfig.h"
 
@@ -6,7 +7,7 @@
 
 //This is the configuration file, main structure in _main.ino
 //CONFIGURATION SETTINGS:
-#define COMMUNICATION COMM_SERIAL //Which communication to use. Options are: COMM_SERIAL (usb), COMM_BTSERIAL (bluetooth)
+#define COMMUNICATION COMM_BLEBINARY //Which communication to use. Options are: COMM_SERIAL (usb), COMM_BTSERIAL (bluetooth)
 //serial over USB
   #define SERIAL_BAUD_RATE 115200
   
@@ -155,4 +156,6 @@
     #define PIN_MIDDLE_SECOND    MUX(5)
     #define PIN_INDEX_SECOND     MUX(7)
     #define PIN_THUMB_SECOND     MUX(9)
+#endif
+
 #endif

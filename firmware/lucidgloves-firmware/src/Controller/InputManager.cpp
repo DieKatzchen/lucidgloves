@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "..\Util\Mapping.h"
 InputManager::InputManager() {
     // Constructor logic here...
 }
@@ -242,7 +243,6 @@ float InputManager::sinCosMix(int sinPin, int cosPin, int i){
     cosMax[i] = max(cosCalib, cosMax[i]);
   }
   
-  if 
   float sinScaled = mapf(sinRaw, sinMin[i], sinMax[i], -ANALOG_MAX, ANALOG_MAX);
   float cosScaled = mapf(cosRaw, cosMin[i], cosMax[i], -ANALOG_MAX, ANALOG_MAX);
 
@@ -265,7 +265,7 @@ float InputManager::sinCosMix(int sinPin, int cosPin, int i){
 
 void InputManager::saveTravel()
 {
-  prefs.putBytes(maxTravel, (byte*)(&maxTravel), sizeof(maxTravel));
+  prefs.putBytes("maxTravel", (byte*)(&maxTravel), sizeof(maxTravel));
   /*byte flags = EEPROM.read(0x00);
   flags |= 0x01;  // Set bit 0
   EEPROM.write(0x00, flags); // Save clamping saved limits flag
