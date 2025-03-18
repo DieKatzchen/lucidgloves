@@ -14,8 +14,13 @@ void AlphaEncoding::encode(OutboundData data, char* stringToEncode){
   data.triggerButton?"I":"", data.aButton?"J":"", data.bButton?"K":"", data.grab?"L":"", data.pinch?"M":"", data.menu?"N":"", data.calib?"O":"",
   splayString);
 }
-DecodedData AlphaEncoding::decodeData(char* stringToDecode) {
-  DecodedData decodedData = {};
+
+void AlphaEncoding::encode(OutboundData data, OutboundStruct* dataToEncode){
+	
+}
+
+ReceivedStruct AlphaEncoding::decodeData(char* stringToDecode) {
+  ReceivedStruct decodedData = {};
 
   if (strchr(stringToDecode, 'Z') != NULL) {
     for (int i = 0; i < NUM_SPECIAL_COMMANDS; i++) {

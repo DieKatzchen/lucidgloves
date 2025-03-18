@@ -6,8 +6,8 @@
 
 class StructEncoding : public IEncoding {
 public:
-    void encode(OutboundData data, InputData* dataToEncode);
-    DecodedData decodeData(DecodedData* dataToDecode);
+    void encode(OutboundData data, OutboundStruct* dataToEncode);
+    ReceivedStruct decodeData(ReceivedStruct* dataToDecode);
 };
 
 #endif

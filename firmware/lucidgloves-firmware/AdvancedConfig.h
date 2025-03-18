@@ -6,8 +6,8 @@
 #define LOOP_TIME 1 //How much time between data sends (ms), set to 0 for a good time :)
 #define CALIBRATION_LOOPS -1//How many loops should be calibrated. Set to -1 to always be calibrated.
 
-//Encoding
-#define ENCODING ENCODE_ALPHA
+//Encoding, options are ENCODE_ALPHA, ENCODE_LEGACY, and ENCODE_STRUCT
+#define ENCODING ENCODE_STRUCT
 
 #define NUM_FINGERS 5
 

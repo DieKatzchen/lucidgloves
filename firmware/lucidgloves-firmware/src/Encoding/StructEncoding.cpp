@@ -1,7 +1,7 @@
 #include "StructEncoding.h"
 #include "../Util/Mapping.h"
 #include <Arduino.h>
-void StructEncoding::encode(OutboundData data, InputData* dataToEncode){
+void StructEncoding::encode(OutboundData data, OutboundStruct* dataToEncode){
   float trigger = (data.fingers[1] > ANALOG_MAX/2) ? (data.fingers[1] - ANALOG_MAX/2) * 2:0;
   #if USING_SPLAY
   for (int i=0;i<NUM_FINGERS,i++)
@@ -22,6 +22,6 @@ void StructEncoding::encode(OutboundData data, InputData* dataToEncode){
   dataToEncode->menu = data.menu;
   dataToEncode->calibrate = data.calib;
 }
-DecodedData StructEncoding::decodeData(DecodedData* dataToDecode) {
+ReceivedStruct StructEncoding::decodeData(ReceivedStruct* dataToDecode) {
     return *dataToDecode;
 }

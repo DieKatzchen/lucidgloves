@@ -19,6 +19,10 @@ public:
 
     void start() override;
 
+	void output(OutboundData* data) override;
+
+    bool readData(DecodedData* input) override;
+	
     void output(char* data) override;
 
     bool readData(char* input) override;

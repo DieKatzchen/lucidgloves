@@ -30,14 +30,12 @@ void Main::setup() {
     comm = new BTSerialCommunication();
   #elif COMMUNICATION == COMM_BLESERIAL
     comm = new BLESerialCommunication();
-  #elif COMMUNICATION == COMM_BLEBINARY
-    comm = new BLEBinaryCommunication();
   #else
     #error "Communication not set."
   #endif 
 
-  #if COMMUNICATION == COMM_BLEBINARY
-    encoding == NULL;
+  #if ENCODING == ENCODE_STRUCT
+    encoding == new StructEncoding();
   #elif ENCODING == ENCODE_ALPHA
     encoding = new AlphaEncoding();
   #elif ENCODING == ENCODE_LEGACY
