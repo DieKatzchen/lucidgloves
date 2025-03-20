@@ -58,11 +58,7 @@ struct OutboundData {
     bool pinch;
     bool calib;
     bool menu;
-
-    //20 bytes
-    #if USING_SPLAY
-	  float splay[NUM_FINGERS];
-    #endif
+	float splay[NUM_FINGERS];
 };
 
 #endif
