@@ -7,11 +7,7 @@
 
 //This is the configuration file, main structure in _main.ino
 //CONFIGURATION SETTINGS:
-#define COMMUNICATION COMM_BLEBINARY //Which communication to use. Options are: COMM_SERIAL (usb), COMM_BTSERIAL (bluetooth), COMM_BLE (bluetooth low energy)
-//serial over USB
-  #define SERIAL_BAUD_RATE 115200
-  
-//serial over Bluetooth
+//Bluetooth device name
   #define BTSERIAL_DEVICE_NAME "lucidgloves-left"
 
 //ANALOG INPUT CONFIG

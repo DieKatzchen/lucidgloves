@@ -1,13 +1,7 @@
 #include "Main.h"
-#include "Communication/SerialCommunication.h"
-#include "Communication/BTSerialCommunication.h"
-#include "Communication/BLEBinaryCommunication.h"
-#include "Communication/BLEBinaryCommunication.h"
-#include "Encoding/AlphaEncoding.h"
-#include "Encoding/LegacyEncoding.h"
+#include "Communication/BLECommunication.h"
 #include "Encoding/StructEncoding.h"
 #include "Util/DataStructs.h"
-#include "Util/Mapping.h"
 
 #define ALWAYS_CALIBRATING CALIBRATION_LOOPS == -1
 #define CALIB_OVERRIDE false
@@ -24,26 +18,10 @@ void Main::setup() {
   pinMode(DEBUG_LED, OUTPUT);
   digitalWrite(DEBUG_LED, HIGH); 
 
-  #if COMMUNICATION == COMM_SERIAL
-    comm = new SerialCommunication();
-  #elif COMMUNICATION == COMM_BTSERIAL
-    comm = new BTSerialCommunication();
-  #elif COMMUNICATION == COMM_BLESERIAL
-    comm = new BLESerialCommunication();
-  #else
-    #error "Communication not set."
-  #endif 
 
-  #if ENCODING == ENCODE_STRUCT
-    encoding == new StructEncoding();
-  #elif ENCODING == ENCODE_ALPHA
-    encoding = new AlphaEncoding();
-  #elif ENCODING == ENCODE_LEGACY
-    encoding = new LegacyEncoding();
-  #else
-    #error "Encoding not set."
-  #endif
+  comm = new BLECommunication();
 
+  encoding == new StructEncoding();
   
   comm->start();
 
@@ -134,50 +112,23 @@ void Main::loop() {
     data.joyX = input.getJoyX();
     data.joyY = input.getJoyY();
 
-    #if COMMUNICATION == COMM_BLEBINARY
-	static InputData encodedStruct;
-	encoding->encode(data, encodedStruct);
+	static OutboundStruct encodedStruct;
+	encoding->encode(data, &encodedStruct);
 	comm->output(encodedStruct);
-	#else
-    static char encodedString[100] = {0};
-    encoding->encode(data, encodedString);
-    comm->output(encodedString);
-	#endif
     #if USING_FORCE_FEEDBACK
-	  #if COMMUNICATION == COMM_BLEBINARY
-	  static DecodedData receivedData
-	  if (comm->readData(receivedData)){
-		  haptics.writeServoHaptics(recievedData.servoValues); 
-           if (recievedData.fields.specialCommandReceived){
+	  static ReceivedStruct receivedData;
+	  if (comm->readData(&receivedData)){
+		  haptics.writeServoHaptics(receivedData.servoValues); 
+           if (receivedData.fields.specialCommandReceived){
             Serial.println("Special command recieved!!!");
-              if (recievedData.command == "ClearData")
+              if (receivedData.command == "ClearData")
                 input.clearFlags();
-              else if (recievedData.command == "SaveInter")
+              else if (receivedData.command == "SaveInter")
                 input.saveIntermediate();
-              else if (recievedData.command == "SaveTravel")
+              else if (receivedData.command == "SaveTravel")
                 input.saveTravel();
            }
 	  }
-	  #else
-      static char received[100];
-      if (comm->readData(received)){
-        int hapticLimits[5];
-        //This check is a temporary hack to fix an issue with haptics on v0.5 of the driver, will make it more snobby code later
-        if(String(received).length() >= 5) {
-           DecodedData recievedData = encoding->decodeData(received);
-           haptics.writeServoHaptics(recievedData.servoValues); 
-           if (recievedData.fields.specialCommandReceived){
-            Serial.println("Special command recieved!!!");
-              if (recievedData.command == "ClearData")
-                input.clearFlags();
-              else if (recievedData.command == "SaveInter")
-                input.saveIntermediate();
-              else if (recievedData.command == "SaveTravel")
-                input.saveTravel();
-           }
-        }
-      }
-	  #endif
     #endif
     #if defined(ESP32)
       vTaskDelay(LOOP_TIME);

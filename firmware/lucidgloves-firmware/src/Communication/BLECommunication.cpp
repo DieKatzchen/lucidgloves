@@ -1,12 +1,10 @@
 #include "BLECommunication.h"
 
-#if COMMUNICATION == COMM_BLESERIAL
-
-BLESerialCommunication::BLECommunication() {
+BLECommunication::BLECommunication() {
     m_isOpen = false;
 }
 
-class ServerCallbacks: public NimBLEServerCallbacks Callbacks {
+class ServerCallbacks: public NimBLEServerCallbacks {
     void onConnect(NimBLEServer* pServer) {
         #ifdef NEOPIXEL
         neopixelWrite(DEBUG_LED,0,RGB_BRIGHTNESS,0); // Green
@@ -19,11 +17,11 @@ class ServerCallbacks: public NimBLEServerCallbacks Callbacks {
     };
 };
 
-bool BLESerialCommunication::isOpen() {
+bool BLECommunication::isOpen() {
     return m_isOpen;
 }
 
-void BLESerialCommunication::start() {
+void BLECommunication::start() {
     NimBLEDevice::init(BTSERIAL_DEVICE_NAME);
 
     pServer = NimBLEDevice::createServer();
@@ -47,13 +45,13 @@ void BLESerialCommunication::start() {
     m_isOpen = true;
 }
 
-void BLESerialCommunication::output(OutboundData* data) {
+void BLECommunication::output(OutboundStruct data) {
     if(pServer->getConnectedCount()) {
         NimBLEService* pSvc = pServer->getServiceByUUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
         if(pSvc) {
             NimBLECharacteristic* qChr = pSvc->getCharacteristic("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
             if(qChr) {
-                qChr->setValue(data);
+                qChr->setValue<OutboundStruct>(data);
                 qChr->notify();
             }
         }
@@ -66,7 +64,7 @@ void BLESerialCommunication::output(OutboundData* data) {
     #endif
 }
 
-bool BLESerialCommunication::readData(DecodedData* input) {
+bool BLECommunication::readData(ReceivedStruct* input) {
     /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
     input[size] = NULL;*/
     if(pServer->getConnectedCount()) {
@@ -75,14 +73,18 @@ bool BLESerialCommunication::readData(DecodedData* input) {
             NimBLECharacteristic* qChr = pSvc->getCharacteristic("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
             if(qChr) {
                 //String message = qChr->getValue();
-                memcpy(input, qChr->getValue(), qChr->getDataLength();
+                memcpy(input, qChr->getValue(), qChr->getValue().length());
             }
+			else return false;
         }
+		else return false;
     }
+	else return false;
+	
     return input != NULL && sizeof(input) > 0;
 }
 
-void BLESerialCommunication::output(char* data) {
+void BLECommunication::output(char* data) {
     if(pServer->getConnectedCount()) {
         NimBLEService* pSvc = pServer->getServiceByUUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
         if(pSvc) {
@@ -101,7 +103,7 @@ void BLESerialCommunication::output(char* data) {
     #endif
 }
 
-bool BLESerialCommunication::readData(char* input) {
+bool BLECommunication::readData(char* input) {
     /*byte size = m_SerialBT.readBytesUntil('\n', input, 100);
     input[size] = NULL;*/
     if(pServer->getConnectedCount()) {
@@ -112,9 +114,11 @@ bool BLESerialCommunication::readData(char* input) {
                 //String message = qChr->getValue();
                 strcpy(input, qChr->getValue().c_str());
             }
+			else return false;
         }
+		else return false;
     }
+	else return false;
+	
     return input != NULL && strlen(input) > 0;
 }
-
-#endif

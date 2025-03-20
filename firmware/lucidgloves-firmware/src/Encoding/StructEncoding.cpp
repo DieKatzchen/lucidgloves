@@ -5,7 +5,7 @@ void StructEncoding::encode(OutboundData data, OutboundStruct* dataToEncode){
   float trigger = (data.fingers[1] > ANALOG_MAX/2) ? (data.fingers[1] - ANALOG_MAX/2) * 2:0;
   #if USING_SPLAY
   for (int i=0;i<NUM_FINGERS,i++)
-    dataToEncode.splay = mapf(data.splay,0,ANALOG_MAX,0,1);
+    dataToEncode->splay = mapf(data.splay,0,ANALOG_MAX,0,1);
   #endif
   for (int i=0;i<NUM_FINGERS;i++)
 	for(int j=0;j<4;j++)

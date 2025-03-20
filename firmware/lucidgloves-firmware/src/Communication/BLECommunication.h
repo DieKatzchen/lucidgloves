@@ -1,32 +1,30 @@
-#ifndef BLESERIALCOMMUNICATION_H
-#define BLESERIALCOMMUNICATION_H
+#ifndef BLECOMMUNICATION_H
+#define BLECOMMUNICATION_H
 #include "ICommunication.h"
 #include "../../Config.h"
 
-#if COMMUNICATION == COMM_BLESERIAL
 #include <NimBLEDevice.h>
 #define   CONFIG_BT_NIMBLE_PINNED_TO_CORE   1 //Pins NimBLE to core 1
 
-class BLESerialCommunication : public ICommunication {
+class BLECommunication : public ICommunication {
 private:
     bool m_isOpen;
     NimBLEServer* pServer;
     
 public:
-    BLESerialCommunication();
+    BLECommunication();
 
     bool isOpen() override;
 
     void start() override;
 
-	void output(OutboundData* data) override;
+	void output(OutboundStruct data) override;
 
-    bool readData(DecodedData* input) override;
+    bool readData(ReceivedStruct* input) override;
 	
     void output(char* data) override;
 
     bool readData(char* input) override;
 };
-#endif
 
 #endif
